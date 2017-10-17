@@ -22,7 +22,7 @@ function addSphere(){
 				for ( var z= -1000; z < 1000; z+=20 ) {
 		
 					// Make a sphere (exactly the same as before). 
-					var geometry   = new THREE.SphereGeometry(.5, 32, 32)
+					var geometry   = new THREE.SphereGeometry(5, 32, 32)
 					var material = new THREE.MeshBasicMaterial( {color: 0xffffff} );
 					var sphere = new THREE.Mesh(geometry, material)
 		
@@ -53,7 +53,7 @@ function animateStars() {
 			star = stars[i]; 
 				
 			// and move it forward dependent on the mouseY position. 
-			star.position.z +=  i/10;
+			star.position.z +=  i/2;
 				
 			// if the particle is too close move it to the back
 			if(star.position.z>1000) star.position.z-=2000;
@@ -95,20 +95,20 @@ scene.add( cube );
 	scene.add(skyBox);
 
 // Wall Geometry
-var geometry = new THREE.BoxGeometry( 2, 1, 1 );
+/* var geometry = new THREE.BoxGeometry( 2, 1, 1 );
 var material = new THREE.MeshBasicMaterial( { color: 0x9932CC, wireframe:true } );
 var wall = new THREE.Mesh( geometry, material );
 wall.position.set(1, 1, 0)
 scene.add( wall );
-collidableMeshList.push(wall);
+collidableMeshList.push(wall);*/
 
 // Wall Geometry
-var geometry = new THREE.BoxGeometry( 2, 1, 1 );
+/*var geometry = new THREE.BoxGeometry( 2, 1, 1 );
 var material = new THREE.MeshBasicMaterial( { color: 0x9932CC, wireframe:true } );
 var wall2 = new THREE.Mesh( geometry, material );
 wall2.position.set(2, -2, 0)
 scene.add( wall2 );
-collidableMeshList.push(wall2);
+collidableMeshList.push(wall2);*/
 
 
 addSphere();
@@ -123,13 +123,28 @@ camera.position.z = 5;
 var moveDistance;
 var animate = function () {
 requestAnimationFrame( animate );
-var delta = clock.getDelta(); // seconds.
-cube.rotation.x += 0.01;
-cube.rotation.y += 0.01;
-var delta = clock.getDelta(); // seconds.
-// moveDistance = 24000 * delta; // 200 pixels per second
-moveDistance = .47;
-renderer.render(scene, camera);
+  var delta = clock.getDelta(); // seconds.
+  cube.rotation.x += 0.01;
+  cube.rotation.y += 0.01;
+  var delta = clock.getDelta(); // seconds.
+  // moveDistance = 24000 * delta; // 200 pixels per second
+  moveDistance = .47;
+  renderer.render(scene, camera);
+
+  var vector = new THREE.Vector3( cube.position.x, cube.position.y, 0.5 );
+  var raycaster = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
+     var intersects = raycaster.intersectObjects( collidableMeshList );
+     var intersects = raycaster.intersectObjects(collidableMeshList);
+
+   if (intersects.length > 0) {
+     var firstIntersectedObject  = intersects[0];
+     console.log(intersects[0]);
+     appendText(" Hit ");
+     setTimeout(function(){ clearText(); }, 3000);
+
+     // this will give you the first intersected Object if there are multiple.
+   }
+
 };
 
 animate();
@@ -160,10 +175,9 @@ function onDocumentKeyDown(event) {
     } else if (keyCode == 32) {
         cube.position.set(0, 0, 0);
     }
-  
-    var originPoint = cube.position.clone();
 
-    for (var vertexIndex = 0; vertexIndex < cube.geometry.vertices.length; vertexIndex++)
+  
+    /* for (var vertexIndex = 0; vertexIndex < cube.geometry.vertices.length; vertexIndex++)
 	{		
 		var localVertex = cube.geometry.vertices[vertexIndex].clone();
 		var globalVertex = localVertex.applyMatrix4( cube.matrix );
@@ -176,7 +190,7 @@ function onDocumentKeyDown(event) {
                   setTimeout(function(){ clearText(); }, 3000);
                 }
 	}	
-
+     */
 
 
 };
